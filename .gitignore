@@ -1,0 +1,50 @@
+# Entornos
+.venv/
+venv/
+env/
+.python-version
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Secretos y entorno
+.env
+.env.local
+*.key
+
+# Datos pesados
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/offers/
+data/raw/offers/*
+!data/raw/offers/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Modelos locales descargados por sentence-transformers
+.cache/
+models/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Neo4j volumes (en caso de bind mounts)
+neo4j_data/
+neo4j_logs/
+
+# Runs de evaluacion (artefactos)
+data/eval_runs/*.json

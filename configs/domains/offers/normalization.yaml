@@ -1,0 +1,489 @@
+domain: offers
+version: 0.2.0
+
+technologies:
+  # --- Lenguajes ---
+  Java:
+    aliases: [java, jdk, "jdk 8", "jdk 11", "jdk 17", "java 8", "java 11", "java 17", "java 21", openjdk]
+    category: language
+  Python:
+    aliases: [python, "python 3", "python3", "py", "py3"]
+    category: language
+  JavaScript:
+    aliases: [javascript, js, ecmascript]
+    category: language
+  TypeScript:
+    aliases: [typescript, ts]
+    category: language
+  "C#":
+    aliases: ["c#", csharp, "c sharp"]
+    category: language
+
+  # --- Frameworks ---
+  ".NET":
+    aliases: [dotnet, ".net core", "net core", "asp.net", ".net framework", "asp.net core"]
+    category: framework
+    vendor: Microsoft
+  Spring Boot:
+    aliases: [spring, springboot, "spring boot", "spring framework"]
+    category: framework
+  Angular:
+    aliases: [angular, angularjs, "angular js", "angular 16"]
+    category: framework
+  React:
+    aliases: [react, reactjs, "react js", "react.js"]
+    category: framework
+  Vue:
+    aliases: [vue, vuejs, "vue.js"]
+    category: framework
+
+  # --- Bases de datos ---
+  PostgreSQL:
+    aliases: [postgres, postgresql, "postgre sql"]
+    category: database
+  MySQL:
+    aliases: [mysql, "my sql"]
+    category: database
+  MongoDB:
+    aliases: [mongodb, "mongo db", mongo]
+    category: database
+  Oracle:
+    aliases: [oracle, "oracle db", "oracle database"]
+    category: database
+  Azure SQL Database:
+    aliases: ["azure sql", "azure sql database", "azure sql db"]
+    category: database
+    vendor: Microsoft
+  Azure Cosmos DB:
+    aliases: ["cosmos db", "cosmosdb", "azure cosmos db", "azure cosmos"]
+    category: database
+    vendor: Microsoft
+
+  # --- Contenedores y orquestación ---
+  Docker:
+    aliases: [docker, "docker engine", "docker ce"]
+    category: tool
+  Kubernetes:
+    aliases: [kubernetes, k8s, kube]
+    category: platform
+  OpenShift:
+    aliases: [openshift, "red hat openshift", "azure red hat openshift", "aro"]
+    category: platform
+    vendor: Red Hat
+  Azure Kubernetes Service:
+    aliases: [aks, "azure kubernetes service", "azure kubernetes"]
+    category: cloud
+    vendor: Microsoft
+  Azure Container Registry:
+    aliases: [acr, "azure container registry"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Clouds ---
+  AWS:
+    aliases: [aws, "amazon web services", "amazon aws"]
+    category: cloud
+  Azure:
+    aliases: [azure, "microsoft azure", "ms azure"]
+    category: cloud
+    vendor: Microsoft
+  GCP:
+    aliases: [gcp, "google cloud", "google cloud platform"]
+    category: cloud
+
+  # --- Azure: IA y conocimiento ---
+  Azure OpenAI:
+    aliases: ["azure openai", "azure openai service", "aoai"]
+    category: cloud
+    vendor: Microsoft
+  Azure AI Foundry:
+    aliases: ["azure ai foundry", "ai foundry", "azure foundry"]
+    category: cloud
+    vendor: Microsoft
+  Azure AI Search:
+    aliases: ["azure ai search", "azure cognitive search", "cognitive search", "ai search"]
+    category: cloud
+    vendor: Microsoft
+  Azure Cognitive Services:
+    aliases: ["azure cognitive services", "cognitive services"]
+    category: cloud
+    vendor: Microsoft
+  Azure Speech Service:
+    aliases: ["azure speech", "azure speech service", "speech service", "azure cognitive services for speech"]
+    category: cloud
+    vendor: Microsoft
+  Azure Bot Service:
+    aliases: ["azure bot service", "bot service", "bot framework"]
+    category: cloud
+    vendor: Microsoft
+  Azure Form Recognizer:
+    aliases: ["azure form recognizer", "form recognizer", "azure document intelligence"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Azure: integración y comunicación ---
+  Azure Communication Services:
+    aliases: ["azure communication services", "communication services"]
+    category: cloud
+    vendor: Microsoft
+  Azure Service Bus:
+    aliases: ["azure service bus", "service bus"]
+    category: cloud
+    vendor: Microsoft
+  Azure Logic Apps:
+    aliases: ["azure logic apps", "logic apps"]
+    category: cloud
+    vendor: Microsoft
+  Azure Functions:
+    aliases: ["azure functions", "functions app"]
+    category: cloud
+    vendor: Microsoft
+  Azure App Service:
+    aliases: ["azure app service", "app service"]
+    category: cloud
+    vendor: Microsoft
+  Azure API Management:
+    aliases: ["azure api management", "azure apim", "apim"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Azure: datos y almacenamiento ---
+  Azure Blob Storage:
+    aliases: ["azure blob storage", "blob storage", "azure blob"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Azure: seguridad e identidad ---
+  Azure Active Directory:
+    aliases: ["azure ad", "azure active directory", "aad", "entra id", "microsoft entra"]
+    category: cloud
+    vendor: Microsoft
+  Azure Key Vault:
+    aliases: ["azure key vault", "key vault"]
+    category: cloud
+    vendor: Microsoft
+  Azure Virtual Network:
+    aliases: ["azure vnet", "vnet", "azure virtual network"]
+    category: cloud
+    vendor: Microsoft
+  Azure Security Center:
+    aliases: ["azure security center", "security center", "microsoft defender for cloud"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Azure: observabilidad ---
+  Azure Monitor:
+    aliases: ["azure monitor"]
+    category: cloud
+    vendor: Microsoft
+  Azure Application Insights:
+    aliases: ["application insights", "app insights", "azure application insights"]
+    category: cloud
+    vendor: Microsoft
+  Azure Log Analytics:
+    aliases: ["log analytics", "azure log analytics", "azure monitor log analytics"]
+    category: cloud
+    vendor: Microsoft
+
+  # --- Azure: DevOps ---
+  Azure DevOps:
+    aliases: ["azure devops", "azure devops repos", "ado"]
+    category: tool
+    vendor: Microsoft
+
+  # --- Modelos LLM y embeddings ---
+  GPT-4:
+    aliases: ["gpt-4", "gpt 4", "gpt4"]
+    category: llm
+    vendor: OpenAI
+  GPT-4o:
+    aliases: ["gpt-4o", "gpt 4o", "gpt-4-o"]
+    category: llm
+    vendor: OpenAI
+  GPT-5:
+    aliases: ["gpt-5", "gpt 5", "gpt5"]
+    category: llm
+    vendor: OpenAI
+  text-embedding-3-small:
+    aliases: ["text-embedding-3-small"]
+    category: embedding
+    vendor: OpenAI
+  text-embedding-3-large:
+    aliases: ["text-embedding-3-large"]
+    category: embedding
+    vendor: OpenAI
+  Cohere:
+    aliases: [cohere]
+    category: llm
+    vendor: Cohere
+  Claude:
+    aliases: [claude, "claude 3", "claude 3.5", "claude sonnet", "claude opus"]
+    category: llm
+    vendor: Anthropic
+
+  # --- Mensajería y datos ---
+  Apache Kafka:
+    aliases: [kafka, "apache kafka"]
+    category: tool
+
+  # --- DevOps / CI-CD ---
+  GitLab:
+    aliases: [gitlab, "gitlab ci", "gitlab-ci"]
+    category: tool
+  GitHub:
+    aliases: [github, "github enterprise", "github actions"]
+    category: tool
+  Jenkins:
+    aliases: [jenkins, "jenkins ci"]
+    category: tool
+  Terraform:
+    aliases: [terraform, "terraform iac"]
+    category: tool
+
+  # --- Calidad / testing ---
+  SonarQube:
+    aliases: [sonarqube, sonar, "sonar qube"]
+    category: tool
+  JUnit:
+    aliases: [junit]
+    category: tool
+  Selenium:
+    aliases: [selenium]
+    category: tool
+  SoapUI:
+    aliases: [soapui, "soap ui"]
+    category: tool
+  JMeter:
+    aliases: [jmeter, "apache jmeter"]
+    category: tool
+  Testlink:
+    aliases: [testlink, "test link"]
+    category: tool
+
+  # --- BI ---
+  Power BI:
+    aliases: ["power bi", powerbi, "ms power bi"]
+    category: tool
+    vendor: Microsoft
+
+  # --- CRM ---
+  Dynamics 365:
+    aliases: ["dynamics 365", "dynamics365", "ms dynamics", "microsoft dynamics 365"]
+    category: tool
+    vendor: Microsoft
+
+  # --- Colaboración ---
+  SharePoint:
+    aliases: [sharepoint, "share point"]
+    category: tool
+    vendor: Microsoft
+
+ai_concepts:
+  RAG:
+    aliases: [rag, "retrieval augmented generation", "retrieval-augmented generation"]
+    category: pattern
+  Fine-tuning:
+    aliases: [finetuning, "fine tuning", "fine-tuning", "ajuste fino"]
+    category: technique
+  RFT:
+    aliases: [rft, "reinforcement fine-tuning", "reinforcement finetuning", "fine-tuning por refuerzo"]
+    category: technique
+  DPO:
+    aliases: [dpo, "direct preference optimization"]
+    category: technique
+  Embeddings:
+    aliases: [embedding, embeddings]
+    category: technique
+  Vector Search:
+    aliases: ["vector search", "búsqueda vectorial", "busqueda vectorial", "búsqueda semántica", "semantic search"]
+    category: technique
+  Grounding:
+    aliases: [grounding]
+    category: technique
+  STT:
+    aliases: [stt, "speech to text", "speech-to-text", "voz a texto", "reconocimiento de voz"]
+    category: technique
+  TTS:
+    aliases: [tts, "text to speech", "text-to-speech", "síntesis de voz", "sintesis de voz"]
+    category: technique
+  Custom Question Answering:
+    aliases: [cqa, "custom question answering", "qna", "preguntas y respuestas personalizado"]
+    category: pattern
+  Agentic Retrieval:
+    aliases: ["agentic retrieval", "agente recuperador"]
+    category: pattern
+  Prompt Engineering:
+    aliases: ["prompt engineering", "ingeniería de prompts"]
+    category: technique
+
+roles:
+  Backend Developer:
+    aliases: ["backend developer", "backend engineer", "desarrollador backend", "programador backend"]
+  Frontend Developer:
+    aliases: ["frontend developer", "frontend engineer", "desarrollador frontend"]
+  Fullstack Developer:
+    aliases: ["fullstack developer", "full stack developer", "full-stack developer", "desarrollador fullstack"]
+  DevOps Engineer:
+    aliases: ["devops engineer", "devops", "ingeniero devops", "sre", "site reliability engineer"]
+  Data Engineer:
+    aliases: ["data engineer", "ingeniero de datos"]
+  Data Scientist:
+    aliases: ["data scientist", "científico de datos"]
+  Arquitecto de Soluciones:
+    aliases: ["solution architect", "arquitecto", "arquitecto de soluciones", "solutions architect", "arquitecto técnico"]
+  Tech Lead:
+    aliases: ["tech lead", "technical lead", "líder técnico", "lead developer"]
+  Scrum Master:
+    aliases: ["scrum master", "sm"]
+  Product Owner:
+    aliases: ["product owner", "po"]
+  Jefe de Proyecto:
+    aliases: ["jefe de proyecto", "project manager", "pm", "jp"]
+  Director de Negocio:
+    aliases: ["director de negocio", "business director"]
+  Consultor IA:
+    aliases: ["consultor ia", "consultor de ia", "ai consultant", "consultor de inteligencia artificial"]
+  Consultor BI:
+    aliases: ["consultor bi", "consultor business intelligence", "bi consultant"]
+  Consultor UX:
+    aliases: ["consultor ux", "ux consultant", "diseñador ux"]
+  Consultor de Productividad:
+    aliases: ["consultor productividad", "consultor de productividad", "productivity consultant"]
+  Analista Programador:
+    aliases: ["analista programador", "analista-programador", "analyst programmer"]
+  Documentalista:
+    aliases: ["documentalista", "documentalist", "knowledge curator"]
+  Técnico de Pruebas:
+    aliases: ["técnico de pruebas", "tester", "qa engineer", "ingeniero de pruebas", "qa"]
+
+methodologies:
+  Agile:
+    aliases: [agile, agil, ágil, "metodología ágil"]
+    category: agile
+  Scrum:
+    aliases: [scrum]
+    category: agile
+  Kanban:
+    aliases: [kanban]
+    category: agile
+  SAFe:
+    aliases: [safe, "scaled agile framework", "scaled agile"]
+    category: agile
+  DevOps:
+    aliases: [devops, "dev ops"]
+    category: devops
+  DevSecOps:
+    aliases: [devsecops, "dev sec ops", "devsecops"]
+    category: devops
+  ITIL:
+    aliases: [itil, "itil v3", "itil v4"]
+    category: governance
+  UXD:
+    aliases: [uxd, "user experience design", "diseño de experiencia de usuario"]
+    category: design
+  CI/CD:
+    aliases: ["ci/cd", "cicd", "ci cd", "integración continua", "integracion continua", "despliegue continuo", "entrega continua"]
+    category: devops
+  IaC:
+    aliases: [iac, "infrastructure as code", "infraestructura como código", "infraestructura como codigo"]
+    category: devops
+
+certifications:
+  AWS Solutions Architect:
+    aliases: ["aws solutions architect", "aws solution architect"]
+    provider: AWS
+  Azure Solutions Architect Expert:
+    aliases: ["azure solutions architect", "azure solutions architect expert", "az-305"]
+    provider: Microsoft
+  Azure Administrator:
+    aliases: ["azure administrator", "az-104"]
+    provider: Microsoft
+  PMP:
+    aliases: [pmp, "project management professional"]
+    provider: PMI
+  PSM I:
+    aliases: ["psm i", "psm1", "professional scrum master i"]
+    provider: Scrum.org
+  Scrum Master Certified:
+    aliases: ["scrum master certified", "smc", "csm", "certified scrum master"]
+    provider: Scrum Alliance
+  CKA:
+    aliases: ["cka", "certified kubernetes administrator"]
+    provider: CNCF
+  ITIL Foundation:
+    aliases: ["itil foundation", "itil v3 foundation", "itil v4 foundation"]
+    provider: PeopleCert
+
+compliance_frameworks:
+  ENS:
+    aliases: [ens, "esquema nacional de seguridad"]
+    jurisdiction: España
+  ENS Nivel Alto:
+    aliases: ["ens nivel alto", "ens alto", "esquema nacional de seguridad nivel alto"]
+    jurisdiction: España
+  ENS Nivel Medio:
+    aliases: ["ens nivel medio", "ens medio"]
+    jurisdiction: España
+  GDPR:
+    aliases: [gdpr, rgpd, "reglamento general de protección de datos"]
+    jurisdiction: UE
+  CCN-STIC:
+    aliases: ["ccn-stic", "ccn stic", "centro criptológico nacional"]
+    jurisdiction: España
+  OWASP Top 10:
+    aliases: ["owasp", "owasp top 10", "owasp top-10"]
+    jurisdiction: internacional
+  ISO 27001:
+    aliases: ["iso 27001", "iso/iec 27001"]
+    jurisdiction: internacional
+
+contact_channels:
+  Teléfono:
+    aliases: [teléfono, telefono, "llamada telefónica", "llamadas telefónicas", phone, voz]
+    modality: voice
+  Email:
+    aliases: [email, "correo electrónico", "correo electronico", "e-mail", mail]
+    modality: async
+  Formulario Web:
+    aliases: ["formulario web", "formularios web", "web form"]
+    modality: text
+  Chat Web:
+    aliases: ["chat web", "chat", "chat online", "chat en línea", webchat]
+    modality: text
+  WhatsApp:
+    aliases: [whatsapp, "whats app", wa]
+    modality: text
+  Callback:
+    aliases: [callback, "te llamamos", "devolución de llamada"]
+    modality: voice
+
+sectors:
+  Banca:
+    aliases: [banca, bancario, "sector bancario", "servicios financieros", finance, banking]
+  Seguros:
+    aliases: [seguros, "sector asegurador", insurance]
+  Administración Pública:
+    aliases: ["administración pública", "administracion publica", "sector público", "sector publico", "public sector", admon]
+  Telecomunicaciones:
+    aliases: [telco, telecomunicaciones, "sector telco", telecom]
+  Energía:
+    aliases: [energía, "sector energético", energy, utilities]
+  Retail:
+    aliases: [retail, "gran distribución"]
+  Salud:
+    aliases: [salud, "sector salud", healthcare, sanidad]
+  Tesoro Público:
+    aliases: ["tesoro público", "tesoro publico", tesoro, "finanzas públicas", "finanzas publicas"]
+
+# Mapeo entidad → categoría de normalización (clave reservada con prefijo _).
+# Permite añadir entidades nuevas SIN tocar Python: basta declarar aquí qué
+# categoría usar para cada tipo de la ontología.
+_type_to_category:
+  Technology: technologies
+  AIConcept: ai_concepts
+  Role: roles
+  Methodology: methodologies
+  Sector: sectors
+  Certification: certifications
+  ComplianceFramework: compliance_frameworks
+  ContactChannel: contact_channels

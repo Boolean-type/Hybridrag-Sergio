@@ -1,0 +1,29 @@
+domain: generic
+version: 0.1.0
+
+# Dominio mínimo de ejemplo. Sirve como punto de partida para crear
+# nuevos dominios sin tocar Python.
+
+definitions:
+
+  Concept:
+    description: >
+      Cualquier concepto, término o entidad relevante mencionado en el texto.
+    examples:
+      - "Inteligencia artificial"
+      - "Gobierno abierto"
+    counterexamples:
+      - "El"
+      - "Para"
+
+  Person:
+    description: "Persona mencionada por nombre propio."
+    examples: ["Ada Lovelace", "Alan Turing"]
+
+  Organization:
+    description: "Empresa, institución, ONG, universidad u organismo."
+    examples: ["Anthropic", "MIT", "Naciones Unidas"]
+
+  Location:
+    description: "Lugar geográfico: ciudad, país, región."
+    examples: ["Sevilla", "España", "Latinoamérica"]

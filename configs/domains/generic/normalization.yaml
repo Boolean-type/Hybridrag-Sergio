@@ -1,0 +1,9 @@
+domain: generic
+version: 0.1.0
+
+# No hay normalizaciones predefinidas para este dominio.
+# Añade aquí mapeos canónicos cuando los necesites:
+#
+# concepts:
+#   Inteligencia Artificial:
+#     aliases: [ia, ai, "inteligencia artificial"]

@@ -1,0 +1,179 @@
+domain: offers
+version: 0.2.0
+
+entities:
+
+  Offer:
+    label: Offer
+    id_fields: [offer_id]
+    properties:
+      offer_id: string         # Identificador interno (puede derivarse del expediente)
+      file_number: string      # Número de expediente (ej. "1111")
+      title: string
+      publication_date: date
+      submission_date: date
+      currency: string
+      amount: float
+      duration_months: integer
+      source_file: string
+      confidence: float
+
+  Bidder:
+    label: Bidder
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      tax_id: string             # CIF/NIF
+      employees: integer
+      countries: list
+      website: string
+      confidence: float
+
+  Client:
+    label: Client
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      acronym: string            # SGTFI, etc.
+      sector: string
+      confidence: float
+
+  FunctionalRequirement:
+    label: FunctionalRequirement
+    id_fields: [code]            # RF01, RF02, REQ-12...
+    properties:
+      code: string
+      title: string
+      description: string
+      mandatory: boolean
+      confidence: float
+
+  TechnicalRequirement:
+    label: TechnicalRequirement
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      raw_text: string
+      mandatory: boolean
+      confidence: float
+
+  Technology:
+    label: Technology
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      category: string           # language, framework, database, cloud, tool, platform, llm, embedding, service
+      vendor: string             # Microsoft, AWS, Google, Apache, OpenAI...
+      aliases: list
+      confidence: float
+
+  AIConcept:
+    label: AIConcept
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      category: string           # technique, pattern, architecture
+      aliases: list
+      confidence: float
+
+  Role:
+    label: Role
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      seniority: string          # junior, mid, senior, lead, principal
+      headcount: integer         # Cuántas personas se proponen del rol
+      dedication: string         # 100%, parcial, a demanda...
+      confidence: float
+
+  Sector:
+    label: Sector
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      confidence: float
+
+  Methodology:
+    label: Methodology
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      category: string           # agile, devops, design, governance
+      confidence: float
+
+  Certification:
+    label: Certification
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      provider: string           # AWS, Microsoft, PMI, Scrum.org, Linux Foundation...
+      confidence: float
+
+  ComplianceFramework:
+    label: ComplianceFramework
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      level: string              # nivel medio, nivel alto, etc.
+      jurisdiction: string       # España, UE, internacional...
+      confidence: float
+
+  ContactChannel:
+    label: ContactChannel
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      modality: string           # voice, text, async
+      confidence: float
+
+  ServiceLevel:
+    label: ServiceLevel
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      metric: string             # availability, response_time, resolution_time, accuracy, coverage
+      value: string              # "99,9%", "8h", "80%"
+      scope: string              # críticas, no críticas, global
+      confidence: float
+
+  ProjectPhase:
+    label: ProjectPhase
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      duration: string
+      order: integer
+      confidence: float
+
+  Deliverable:
+    label: Deliverable
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      type: string               # plan, document, model, software, report
+      phase: string
+      confidence: float
+
+  Document:
+    label: Document
+    id_fields: [doc_id]
+    properties:
+      doc_id: string
+      source_file: string
+      file_type: string
+      ingestion_date: datetime
+      ontology_version: string
+      metadata: map
+
+  Chunk:
+    label: Chunk
+    id_fields: [chunk_id]
+    properties:
+      chunk_id: string
+      text: string
+      source_file: string
+      page: integer
+      section: string
+      embedding: vector
+      ontology_version: string
+      metadata: map

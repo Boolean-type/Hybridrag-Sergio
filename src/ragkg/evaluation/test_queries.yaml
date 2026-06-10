@@ -1,0 +1,138 @@
+version: 0.4.0
+domain: offers
+
+# Conjunto CALIBRADO a la única oferta ingerida (Entelgy / asistencia IA en tiempo
+# real para los canales de atención al público del Tesoro). Todos los hechos gold
+# se han verificado contra el texto real de la oferta.
+#
+# Para evaluar sobre un corpus amplio (banca, .NET, múltiples sectores/roles),
+# usa el set completo:  --dataset-path src/ragkg/evaluation/test_queries_full.yaml
+# (requiere haber ingerido más ofertas).
+
+queries:
+
+  - id: q1_entelgy_rf
+    type: factoid
+    question: "¿Qué requisitos funcionales aborda la oferta de Entelgy?"
+    paraphrases:
+      - "¿Qué RF cubre la propuesta de Entelgy?"
+      - "Dime los requisitos funcionales que atiende la oferta de Entelgy."
+      - "¿Cuáles son los requisitos funcionales tratados por Entelgy?"
+      - "Enumera los requisitos funcionales que resuelve la oferta de Entelgy."
+    expected_entities:
+      - { type: Bidder, name: "Entelgy" }
+      - { type: FunctionalRequirement, code: "RF01" }
+      - { type: FunctionalRequirement, code: "RF09" }
+
+  - id: q2_azure_openai_rag
+    type: factoid
+    question: "¿Qué oferta combina Azure OpenAI con RAG?"
+    paraphrases:
+      - "¿La propuesta usa Azure OpenAI junto con RAG?"
+      - "Busco si se integra Azure OpenAI y recuperación aumentada (RAG)."
+      - "¿Aparecen Azure OpenAI y arquitectura RAG en la oferta?"
+      - "¿Se aplica RAG sobre Azure OpenAI?"
+    expected_entities:
+      - { type: Technology, name: "Azure OpenAI" }
+      - { type: AIConcept,  name: "RAG" }
+
+  - id: q3_fine_tuning_rft
+    type: factoid
+    question: "¿La oferta propone fine-tuning o RFT?"
+    paraphrases:
+      - "¿Se plantea ajuste fino (fine-tuning) o RFT?"
+      - "¿Menciona la propuesta fine-tuning o RFT?"
+      - "¿Usa la oferta fine-tuning o reinforcement fine-tuning (RFT)?"
+      - "¿Incluye técnicas de fine-tuning o RFT del modelo?"
+    expected_entities:
+      - { type: AIConcept, name: "Fine-tuning" }
+      - { type: AIConcept, name: "RFT" }
+
+  - id: q4_compliance_ens
+    type: factoid
+    question: "¿La oferta se compromete con el ENS?"
+    paraphrases:
+      - "¿Cumple la propuesta el Esquema Nacional de Seguridad (ENS)?"
+      - "¿Hay compromiso con el ENS en la oferta?"
+      - "¿Se garantiza el ENS?"
+      - "¿Aparece el ENS entre los marcos de cumplimiento?"
+    expected_entities:
+      - { type: ComplianceFramework, name: "ENS" }
+
+  - id: q5_gdpr_owasp
+    type: factoid
+    question: "¿La oferta menciona RGPD y OWASP?"
+    paraphrases:
+      - "¿Cita la propuesta el RGPD y OWASP?"
+      - "¿Cumple RGPD y sigue OWASP?"
+      - "¿Aparecen GDPR y OWASP en la oferta?"
+      - "¿Aborda RGPD y las recomendaciones OWASP?"
+    expected_entities:
+      - { type: ComplianceFramework, name: "RGPD" }
+      - { type: ComplianceFramework, name: "OWASP" }
+
+  - id: q6_channels_whatsapp_phone
+    type: factoid
+    question: "¿Qué canales de atención soporta la solución?"
+    paraphrases:
+      - "¿Ofrece la solución WhatsApp y teléfono?"
+      - "¿Incluye atención por WhatsApp y por teléfono?"
+      - "¿Qué canales (WhatsApp, teléfono...) integra la propuesta?"
+      - "¿Permite contacto por WhatsApp y teléfono?"
+    expected_entities:
+      - { type: ContactChannel, name: "WhatsApp" }
+      - { type: ContactChannel, name: "Teléfono" }
+
+  - id: q7_methodology_devsecops_iac
+    type: factoid
+    question: "¿Qué prácticas de entrega aplica la oferta?"
+    paraphrases:
+      - "¿Usa la propuesta DevSecOps o IaC?"
+      - "¿Adopta la oferta DevSecOps e Infraestructura como Código?"
+      - "¿Aparecen DevSecOps o IaC en la metodología?"
+      - "¿Incorpora DevSecOps o infraestructura como código?"
+    expected_entities:
+      - { type: Methodology, name: "DevSecOps" }
+      - { type: Methodology, name: "IaC" }
+
+  - id: q8_sector_tesoro
+    type: factoid
+    question: "¿Para qué sector u organismo es la oferta?"
+    paraphrases:
+      - "¿A qué cliente/organismo va dirigida la propuesta?"
+      - "¿Es la oferta para el Tesoro?"
+      - "¿Qué entidad pública es el destinatario de la oferta?"
+      - "¿El servicio es para los canales de atención del Tesoro?"
+    expected_entities:
+      - { type: Sector, name: "Tesoro" }
+
+  - id: q9_sla_critical
+    type: factoid
+    question: "¿Qué compromisos de SLA hay para incidencias críticas?"
+    paraphrases:
+      - "¿Qué SLA aplica a las incidencias críticas?"
+      - "¿Cuál es el nivel de servicio para críticas?"
+      - "¿Hay acuerdos de SLA para incidencias críticas?"
+      - "¿Qué tiempos de SLA se comprometen para lo crítico?"
+    expected_entities:
+      - { type: ServiceLevel, name: "SLA" }
+      - { type: ServiceLevel, name: "crítica" }
+
+  # --- Abiertas: sin gold determinista, dependen del juez ---
+  - id: q10_top_technologies
+    type: aggregate
+    question: "¿Qué tecnologías son las más relevantes en la oferta?"
+    paraphrases:
+      - "¿Cuál es el stack tecnológico principal de la propuesta?"
+      - "Dame las tecnologías clave de la oferta."
+      - "¿Qué tecnologías destacan en la solución?"
+      - "Resume el stack tecnológico de la oferta."
+
+  - id: q11_similar_to_offer
+    type: similarity
+    question: "Busca contenido parecido a una asistencia IA para call center público con Azure y RAG."
+    paraphrases:
+      - "¿Qué partes hablan de una asistencia con IA para call center público sobre Azure y RAG?"
+      - "Encuentra secciones sobre un asistente IA de atención pública con Azure y RAG."
+      - "Contenido análogo a una solución de IA para centro de atención público con Azure y RAG."
+      - "Algo parecido a una asistencia IA para canales de atención públicos con Azure y RAG."

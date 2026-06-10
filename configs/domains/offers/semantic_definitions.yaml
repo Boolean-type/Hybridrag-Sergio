@@ -1,0 +1,229 @@
+domain: offers
+version: 0.2.0
+
+# v0.2.0 — Refinado a partir de una oferta técnica real (Entelgy/SGTFI).
+# Cambios principales frente a v0.1.0:
+#  - Bidder separado de Client (ofertante vs adjudicador).
+#  - FunctionalRequirement con código (RFXX) separado de TechnicalRequirement.
+#  - ComplianceFramework separado de Certification.
+#  - ContactChannel, ServiceLevel, ProjectPhase y Deliverable como entidades.
+#  - Definiciones de Technology y Role ampliadas.
+
+definitions:
+
+  Offer:
+    description: >
+      Documento que describe una propuesta, licitación, oportunidad o petición
+      con requisitos técnicos, perfiles, tecnologías, cliente y condiciones.
+      Suele tener un código de expediente, un cliente destinatario y un ofertante.
+    examples:
+      - "Oferta técnica para herramienta de IA para AcmeInc, expediente 1111"
+      - "RFP para migración .NET a cloud"
+    counterexamples:
+      - "Factura de servicios prestados"
+      - "Acta de reunión interna"
+    detection_hints:
+      - "Títulos con 'oferta', 'propuesta', 'RFP', 'licitación', 'expediente'"
+      - "Secciones de requisitos técnicos, perfiles, plan de calidad"
+
+  Bidder:
+    description: >
+      Empresa o consorcio que PRESENTA la oferta. Es el proveedor potencial,
+      no el cliente. Suele aparecer en la portada y en 'Datos de la empresa'.
+    examples:
+      - "Entelgy Consulting, S.A."
+      - "Indra Sistemas"
+      - "Accenture"
+    counterexamples:
+      - "AcmeInc"        # Es el cliente, no el ofertante
+      - "Banco Santander" # Cliente típico, no ofertante
+    detection_hints:
+      - "Empresa que firma la oferta o aparece en 'datos de la empresa'"
+      - "Suele venir con CIF/NIF, número de empleados, sedes"
+
+  Client:
+    description: >
+      Organización destinataria de la oferta: a quien va dirigida y quien
+      adjudicará. En licitaciones públicas suele ser un ministerio, una
+      secretaría o un organismo autónomo.
+    examples:
+      - "AcmeInc"
+      - "Secretaría General del Tesoro y Financiación Internacional (SGTFI)"
+      - "Banco Sur"
+
+  FunctionalRequirement:
+    description: >
+      Requisito funcional numerado del pliego (RFXX, REQ-XX, RNFXX...).
+      Tiene un código corto que actúa como identificador estable y un título.
+      Es el nivel al que evaluadores y comités técnicos hacen preguntas.
+    examples:
+      - "RF 01: Preparación de la Base de Conocimiento"
+      - "RF 07: Integración con el CRM"
+      - "REQ-12: Cuadro de Mando"
+    counterexamples:
+      - "Experiencia en Java 17"          # Esto es TechnicalRequirement
+      - "Conocimiento de Spring Boot"     # Idem
+    detection_hints:
+      - "Patrones tipo 'RF\\d+', 'REQ-\\d+', 'RNF\\d+' seguidos de un título"
+      - "Suelen organizarse en una sección 'Descripción de los trabajos' o 'Requisitos funcionales'"
+
+  TechnicalRequirement:
+    description: >
+      Necesidad técnica concreta (no numerada como RF) que debe cumplir la
+      solución o el equipo: habilidad, restricción técnica, integración,
+      rendimiento, etc. Más granular que un FunctionalRequirement.
+    examples:
+      - "Experiencia en Java 17"
+      - "Integración con APIs REST"
+      - "Despliegue sobre Kubernetes compatible con OpenShift"
+      - "Tiempo de respuesta < 1 segundo bajo carga"
+    counterexamples:
+      - "Disponibilidad para viajar"
+      - "Buen nivel de inglés"
+
+  Technology:
+    description: >
+      Lenguaje, framework, plataforma, base de datos, herramienta cloud,
+      servicio gestionado, modelo de IA o protocolo específico.
+      Incluye servicios cloud concretos (Azure OpenAI, AKS, Blob Storage)
+      y modelos de IA concretos (GPT-4, text-embedding-3-large).
+    examples:
+      - "Java"
+      - "Azure OpenAI"
+      - "Azure Kubernetes Service"
+      - "GPT-4"
+      - "text-embedding-3-large"
+      - "SonarQube"
+      - "Kubernetes"
+    counterexamples:
+      - "Agile"           # Metodología
+      - "DevSecOps"       # Metodología
+      - "Scrum Master"    # Rol
+      - "ENS"             # Marco de cumplimiento
+
+  AIConcept:
+    description: >
+      Técnica, patrón o concepto del campo de IA/ML que no es un producto
+      concreto sino una técnica reutilizable. Útil para preguntas tipo
+      '¿qué ofertas usan RAG?' o '¿qué propuestas mencionan fine-tuning?'.
+    examples:
+      - "RAG"
+      - "Fine-tuning"
+      - "DPO"
+      - "RFT"
+      - "Embeddings"
+      - "Vector search"
+      - "Grounding"
+      - "STT"
+      - "TTS"
+      - "Custom Question Answering"
+    counterexamples:
+      - "GPT-4"           # Producto concreto, no técnica
+      - "Azure OpenAI"    # Servicio, no técnica
+
+  Role:
+    description: >
+      Perfil profesional requerido en la oferta o miembro del equipo propuesto.
+    examples:
+      - "Backend Developer Senior"
+      - "Arquitecto de Soluciones"
+      - "DevOps Engineer"
+      - "Data Engineer"
+      - "Consultor IA"
+      - "Documentalista"
+      - "Jefe de Proyecto"
+
+  Sector:
+    description: >
+      Sector de negocio o industria del cliente o la oferta.
+    examples:
+      - "Banca"
+      - "Seguros"
+      - "Administración Pública"
+      - "Telecomunicaciones"
+
+  Methodology:
+    description: >
+      Metodología, marco de trabajo o forma de trabajar mencionada en la oferta.
+    examples:
+      - "Agile"
+      - "Scrum"
+      - "Kanban"
+      - "DevOps"
+      - "DevSecOps"
+      - "SAFe"
+      - "ITIL"
+      - "UXD"
+      - "CI/CD"
+      - "IaC"
+
+  Certification:
+    description: >
+      Certificación profesional demandada a las PERSONAS (no del sistema).
+      Distinta de ComplianceFramework, que aplica al producto/servicio.
+    examples:
+      - "AWS Solutions Architect"
+      - "Azure Administrator"
+      - "PMP"
+      - "PSM I"
+      - "CKA"
+      - "ITIL Foundation"
+
+  ComplianceFramework:
+    description: >
+      Norma, regulación o marco de cumplimiento que el sistema o el servicio
+      debe respetar. Aplica al producto, no a las personas.
+    examples:
+      - "ENS"
+      - "ENS nivel alto"
+      - "GDPR"
+      - "RGPD"
+      - "CCN-STIC"
+      - "OWASP Top 10"
+      - "ISO 27001"
+    counterexamples:
+      - "PMP"   # Es certificación profesional
+      - "CKA"   # Idem
+
+  ContactChannel:
+    description: >
+      Canal de atención al usuario soportado por la solución propuesta.
+    examples:
+      - "Teléfono"
+      - "Email"
+      - "Formulario web"
+      - "Chat web"
+      - "WhatsApp"
+      - "Callback / Te Llamamos"
+
+  ServiceLevel:
+    description: >
+      Compromiso de nivel de servicio cuantificado (SLA/ANS): tiempos de
+      respuesta y resolución, disponibilidad, tasa de acierto, etc.
+    examples:
+      - "Disponibilidad 99,9%"
+      - "Tiempo de resolución 8h para incidencias críticas"
+      - "Tiempo de respuesta a incidencias 4h laborables"
+      - "Tasa de acierto mínima del 80%"
+      - "Cobertura de tests >= 80%"
+
+  ProjectPhase:
+    description: >
+      Fase declarada del proyecto, con nombre, duración o hito asociado.
+    examples:
+      - "Fase de transición"
+      - "Fase de servicio gestionado"
+      - "Fase de devolución"
+      - "Preparación de la Base de Conocimiento"
+      - "Entrenamiento del Modelo"
+
+  Deliverable:
+    description: >
+      Entregable concreto comprometido por la oferta.
+    examples:
+      - "Plan de Adquisición del Conocimiento"
+      - "Modelo de Gobierno"
+      - "Plan del Proyecto"
+      - "Plan de Riesgos"
+      - "Documento de Arquitectura"
+      - "Informe de Devolución del Servicio"

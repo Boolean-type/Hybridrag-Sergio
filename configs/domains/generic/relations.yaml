@@ -1,0 +1,39 @@
+domain: generic
+version: 0.1.0
+
+relations:
+
+  - name: HAS_CHUNK
+    source: Document
+    target: Chunk
+    description: "Un documento contiene un chunk."
+    properties:
+      chunk_index: integer
+
+  - name: MENTIONS
+    source: Chunk
+    target:
+      - Concept
+      - Person
+      - Organization
+      - Location
+    description: "Un chunk menciona una entidad."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: WORKS_FOR
+    source: Person
+    target: Organization
+    description: "Una persona trabaja para una organización."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: LOCATED_IN
+    source: Organization
+    target: Location
+    description: "Una organización está localizada en un lugar."
+    properties:
+      evidence: string
+      confidence: float

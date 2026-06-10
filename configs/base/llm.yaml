@@ -1,0 +1,28 @@
+version: 0.2.0
+
+# El provider real se inyecta vía variable de entorno LLM_PROVIDER.
+# Valores soportados: mock | openai | groq
+default_provider: mock
+
+providers:
+  openai:
+    model: gpt-4o-mini
+    temperature: 0.0
+    max_tokens: 2000
+
+  groq:
+    base_url: https://api.groq.com/openai/v1
+    model: llama-3.3-70b-versatile
+    temperature: 0.0
+    max_tokens: 2000
+    notes: >
+      Groq Cloud. API compatible OpenAI. Gratis con límites generosos (30 req/min).
+      Modelos producción recomendados:
+        - llama-3.3-70b-versatile  (mejor calidad para extracción)
+        - llama-3.1-8b-instant     (más rápido, menor calidad)
+        - gpt-oss-120b             (modelo grande, contexto 128K)
+
+  mock:
+    description: >
+      Cliente de pruebas que devuelve siempre una extracción vacía.
+      Útil para validar el resto del pipeline sin gastar tokens.

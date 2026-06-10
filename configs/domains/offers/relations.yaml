@@ -1,0 +1,230 @@
+domain: offers
+version: 0.2.0
+
+relations:
+
+  # --- Estructura documental ---
+  - name: HAS_CHUNK
+    source: Document
+    target: Chunk
+    description: "Un documento contiene un chunk."
+    properties:
+      chunk_index: integer
+
+  # --- Oferta como contenedor ---
+  - name: PRESENTED_BY
+    source: Offer
+    target: Bidder
+    description: "Una oferta la presenta un ofertante."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: FOR_CLIENT
+    source: Offer
+    target: Client
+    description: "Una oferta está dirigida a un cliente o adjudicador."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: BELONGS_TO_SECTOR
+    source: Offer
+    target: Sector
+    description: "Una oferta pertenece a un sector de negocio."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: HAS_FUNCTIONAL_REQUIREMENT
+    source: Offer
+    target: FunctionalRequirement
+    description: "Una oferta responde a un requisito funcional del pliego."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: HAS_REQUIREMENT
+    source: Offer
+    target: TechnicalRequirement
+    description: "Una oferta menciona un requisito técnico no numerado."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: REQUIRES_TECHNOLOGY
+    source: Offer
+    target: Technology
+    description: "Una oferta propone o requiere una tecnología."
+    properties:
+      evidence: string
+      mandatory: boolean
+      confidence: float
+
+  - name: USES_AI_CONCEPT
+    source: Offer
+    target: AIConcept
+    description: "Una oferta usa o menciona una técnica/concepto de IA."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: HAS_ROLE
+    source: Offer
+    target: Role
+    description: "Una oferta propone un perfil profesional."
+    properties:
+      evidence: string
+      headcount: integer
+      dedication: string
+      confidence: float
+
+  - name: USES_METHODOLOGY
+    source: Offer
+    target: Methodology
+    description: "Una oferta declara una metodología de trabajo."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: REQUIRES_CERTIFICATION
+    source: Offer
+    target: Certification
+    description: "Una oferta requiere o valora una certificación profesional."
+    properties:
+      evidence: string
+      mandatory: boolean
+      confidence: float
+
+  - name: COMPLIES_WITH
+    source: Offer
+    target: ComplianceFramework
+    description: "La solución de la oferta cumple un marco normativo."
+    properties:
+      evidence: string
+      level: string
+      confidence: float
+
+  - name: SUPPORTS_CHANNEL
+    source: Offer
+    target: ContactChannel
+    description: "La solución soporta un canal de atención."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: COMMITS_SLA
+    source: Offer
+    target: ServiceLevel
+    description: "La oferta compromete un nivel de servicio cuantificado."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: HAS_PHASE
+    source: Offer
+    target: ProjectPhase
+    description: "El proyecto se organiza en una fase."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: HAS_DELIVERABLE
+    source: Offer
+    target: Deliverable
+    description: "La oferta compromete un entregable."
+    properties:
+      evidence: string
+      confidence: float
+
+  # --- Cross-entidad ---
+  - name: REQUIREMENT_USES_TECHNOLOGY
+    source: TechnicalRequirement
+    target: Technology
+    description: "Un requisito técnico necesita una tecnología."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: FR_USES_TECHNOLOGY
+    source: FunctionalRequirement
+    target: Technology
+    description: "Un requisito funcional se cubre con una tecnología."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: FR_PRODUCES_DELIVERABLE
+    source: FunctionalRequirement
+    target: Deliverable
+    description: "Un requisito funcional produce un entregable concreto."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: ROLE_REQUIRES_TECHNOLOGY
+    source: Role
+    target: Technology
+    description: "Un rol exige experiencia en una tecnología."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: PHASE_PRODUCES_DELIVERABLE
+    source: ProjectPhase
+    target: Deliverable
+    description: "Una fase produce un entregable."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: PHASE_FOLLOWS
+    source: ProjectPhase
+    target: ProjectPhase
+    description: "Una fase sucede a otra."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: COMPLIES_WITH
+    source: Bidder
+    target: ComplianceFramework
+    description: "Un ofertante declara cumplir un marco."
+    properties:
+      evidence: string
+      confidence: float
+
+  - name: RELATED_TO
+    source: Technology
+    target: Technology
+    description: "Dos tecnologías están relacionadas (depends_on, alternative_to, part_of)."
+    properties:
+      relation_type: string
+      confidence: float
+
+  # --- Trazabilidad chunk → entidad ---
+  - name: MENTIONS
+    source: Chunk
+    target:
+      - Offer
+      - Bidder
+      - Client
+      - FunctionalRequirement
+      - TechnicalRequirement
+      - Technology
+      - AIConcept
+      - Role
+      - Sector
+      - Methodology
+      - Certification
+      - ComplianceFramework
+      - ContactChannel
+      - ServiceLevel
+      - ProjectPhase
+      - Deliverable
+    description: "Un chunk menciona una entidad."
+    properties:
+      evidence: string
+      confidence: float
+      char_offset_start: integer
+      char_offset_end: integer

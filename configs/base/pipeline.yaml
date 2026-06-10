@@ -1,0 +1,20 @@
+version: 0.1.0
+
+ingestion:
+  chunk_size: 1200
+  chunk_overlap: 200
+  supported_extensions: [".txt", ".md", ".pdf", ".docx"]
+
+extraction:
+  min_confidence: 0.5
+  max_chunk_chars_for_llm: 6000
+  retry_on_invalid_json: 2
+
+graph:
+  batch_size: 100
+  create_chunk_mentions: true
+
+retrieval:
+  top_k_vector: 10
+  expand_top_n_chunks: 5
+  max_graph_results: 50

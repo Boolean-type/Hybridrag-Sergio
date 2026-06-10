@@ -1,0 +1,52 @@
+domain: generic
+version: 0.1.0
+
+entities:
+
+  Concept:
+    label: Concept
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      confidence: float
+
+  Person:
+    label: Person
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      confidence: float
+
+  Organization:
+    label: Organization
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      confidence: float
+
+  Location:
+    label: Location
+    id_fields: [canonical_name]
+    properties:
+      canonical_name: string
+      confidence: float
+
+  Document:
+    label: Document
+    id_fields: [doc_id]
+    properties:
+      doc_id: string
+      source_file: string
+      file_type: string
+      ingestion_date: datetime
+      metadata: map
+
+  Chunk:
+    label: Chunk
+    id_fields: [chunk_id]
+    properties:
+      chunk_id: string
+      text: string
+      source_file: string
+      embedding: vector
+      metadata: map

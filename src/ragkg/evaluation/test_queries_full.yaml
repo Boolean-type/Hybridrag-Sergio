@@ -1,0 +1,190 @@
+version: 0.3.0
+domain: offers
+
+# Conjunto de queries de evaluación (opción A: gold por hechos verificables).
+# Cada caso lleva 4 paráfrasis CONGELADAS para medir robustez al fraseo sin
+# perder reproducibilidad (no se generan en caliente). Las paráfrasis preservan
+# el mismo gold (expected_entities) que la pregunta original.
+
+queries:
+
+  # --- Tecnologías y stack ---
+  - id: q1_java_microservices_banca
+    type: factoid
+    question: "Dame ofertas de banca donde pidan Java y microservicios."
+    paraphrases:
+      - "¿Qué ofertas del sector banca exigen Java junto con microservicios?"
+      - "Busco propuestas de banca con stack Java y arquitectura de microservicios."
+      - "Enséñame ofertas bancarias que requieran Java y un diseño de microservicios."
+      - "En banca, ¿qué ofertas combinan Java con microservicios?"
+    expected_entities:
+      - { type: Technology, name: "Java" }
+      - { type: Sector,     name: "Banca" }
+
+  - id: q2_dotnet_azure
+    type: factoid
+    question: "Busca ofertas con .NET y Azure."
+    paraphrases:
+      - "¿Qué ofertas utilizan .NET y Azure?"
+      - "Muéstrame propuestas que combinen .NET con Azure."
+      - "Ofertas cuyo stack incluya .NET y la nube Azure."
+      - "Quiero ofertas basadas en .NET desplegadas en Azure."
+    expected_entities:
+      - { type: Technology, name: ".NET" }
+      - { type: Technology, name: "Azure" }
+
+  - id: q3_top_technologies
+    type: aggregate
+    question: "¿Qué tecnologías son más frecuentes en las ofertas recientes?"
+    paraphrases:
+      - "¿Cuáles son las tecnologías que más se repiten en las ofertas?"
+      - "Dame el ranking de tecnologías más habituales en las ofertas."
+      - "¿Qué stack tecnológico aparece con más frecuencia?"
+      - "Lista las tecnologías predominantes en las ofertas recientes."
+
+  # --- Específicos del dominio Azure / IA ---
+  - id: q4_azure_openai_rag
+    type: factoid
+    question: "Ofertas que combinen Azure OpenAI con RAG."
+    paraphrases:
+      - "¿Qué ofertas usan Azure OpenAI junto con RAG?"
+      - "Busco propuestas que integren Azure OpenAI y recuperación aumentada (RAG)."
+      - "Enséñame ofertas con Azure OpenAI y arquitectura RAG."
+      - "Ofertas que apliquen RAG sobre Azure OpenAI."
+    expected_entities:
+      - { type: Technology, name: "Azure OpenAI" }
+      - { type: AIConcept,  name: "RAG" }
+
+  - id: q5_who_uses_fine_tuning
+    type: factoid
+    question: "¿Qué ofertas proponen fine-tuning o RFT?"
+    paraphrases:
+      - "¿Qué propuestas incluyen fine-tuning o RFT?"
+      - "Busco ofertas que planteen ajuste fino (fine-tuning) o RFT."
+      - "Ofertas que mencionen fine-tuning o reinforcement fine-tuning."
+      - "¿Cuáles ofertas usan fine-tuning o RFT de modelos?"
+    expected_entities:
+      - { type: AIConcept, name: "Fine-tuning" }
+      - { type: AIConcept, name: "RFT" }
+
+  # --- Requisitos funcionales numerados ---
+  - id: q6_rf_codes
+    type: factoid
+    question: "¿Qué requisitos funcionales aborda la oferta de Entelgy?"
+    paraphrases:
+      - "¿Qué RF cubre la propuesta de Entelgy?"
+      - "Dime los requisitos funcionales que atiende la oferta de Entelgy."
+      - "¿Cuáles son los requisitos funcionales tratados por Entelgy en su oferta?"
+      - "Enumera los requisitos funcionales que resuelve la oferta de Entelgy."
+    expected_entities:
+      - { type: Bidder, name: "Entelgy" }
+      - { type: FunctionalRequirement, code: "RF01" }
+      - { type: FunctionalRequirement, code: "RF09" }
+
+  # --- Cumplimiento normativo ---
+  - id: q7_compliance_ens
+    type: factoid
+    question: "¿Qué ofertas se comprometen con ENS nivel alto?"
+    paraphrases:
+      - "¿Qué propuestas cumplen el ENS de nivel alto?"
+      - "Busco ofertas que garanticen ENS Nivel Alto."
+      - "Ofertas con compromiso de Esquema Nacional de Seguridad nivel alto."
+      - "¿Cuáles ofertas aseguran cumplimiento ENS alto?"
+    expected_entities:
+      - { type: ComplianceFramework, name: "ENS Nivel Alto" }
+
+  - id: q8_gdpr_owasp
+    type: factoid
+    question: "Ofertas que mencionen RGPD y OWASP."
+    paraphrases:
+      - "¿Qué ofertas citan el RGPD y OWASP?"
+      - "Busco propuestas que cumplan RGPD y sigan OWASP."
+      - "Ofertas con referencias a GDPR y OWASP Top 10."
+      - "¿Cuáles ofertas abordan RGPD y las recomendaciones OWASP?"
+    expected_entities:
+      - { type: ComplianceFramework, name: "GDPR" }
+      - { type: ComplianceFramework, name: "OWASP Top 10" }
+
+  # --- Canales y SLA ---
+  - id: q9_multichannel_whatsapp
+    type: factoid
+    question: "Soluciones que soporten WhatsApp y teléfono."
+    paraphrases:
+      - "¿Qué soluciones ofrecen canal de WhatsApp y telefónico?"
+      - "Busco ofertas con atención por WhatsApp y por teléfono."
+      - "Propuestas que integren WhatsApp y el canal de voz/teléfono."
+      - "¿Cuáles soluciones permiten contacto por WhatsApp y teléfono?"
+    expected_entities:
+      - { type: ContactChannel, name: "WhatsApp" }
+      - { type: ContactChannel, name: "Teléfono" }
+
+  - id: q10_sla_critical
+    type: factoid
+    question: "¿Qué ofertas comprometen menos de 8 horas para incidencias críticas?"
+    paraphrases:
+      - "¿Qué propuestas garantizan resolución de críticas en menos de 8 horas?"
+      - "Busco ofertas con SLA inferior a 8h para incidencias críticas."
+      - "Ofertas cuyo tiempo de resolución de críticas sea menor a 8 horas."
+      - "¿Cuáles ofertas prometen resolver incidencias críticas en menos de 8 horas?"
+    expected_entities:
+      - { type: ServiceLevel, metric: "resolution_time" }
+
+  # --- Roles ---
+  - id: q11_consultor_ia
+    type: factoid
+    question: "Ofertas con perfil Consultor IA o DevOps Engineer."
+    paraphrases:
+      - "¿Qué ofertas buscan un Consultor IA o un DevOps Engineer?"
+      - "Busco propuestas que incluyan los roles de Consultor IA o DevOps Engineer."
+      - "Ofertas con perfiles de Consultor de IA o ingeniero DevOps."
+      - "¿Cuáles ofertas requieren Consultor IA o DevOps Engineer?"
+    expected_entities:
+      - { type: Role, name: "Consultor IA" }
+      - { type: Role, name: "DevOps Engineer" }
+
+  - id: q12_backend_senior_requirements
+    type: factoid
+    question: "¿Qué tecnologías exigen los perfiles backend senior?"
+    paraphrases:
+      - "¿Qué stack se pide a un Backend Developer senior?"
+      - "Tecnologías requeridas para perfiles backend senior."
+      - "¿Qué debe dominar un desarrollador backend senior en estas ofertas?"
+      - "Requisitos tecnológicos de los roles de backend senior."
+    expected_entities:
+      - { type: Role, name: "Backend Developer" }
+
+  # --- Metodologías ---
+  - id: q13_devsecops
+    type: factoid
+    question: "¿Qué ofertas aplican DevSecOps o IaC?"
+    paraphrases:
+      - "¿Qué propuestas usan DevSecOps o Infraestructura como Código?"
+      - "Busco ofertas que adopten DevSecOps o IaC."
+      - "Ofertas con prácticas DevSecOps o IaC."
+      - "¿Cuáles ofertas incorporan DevSecOps o infraestructura como código?"
+    expected_entities:
+      - { type: Methodology, name: "DevSecOps" }
+      - { type: Methodology, name: "IaC" }
+
+  # --- Sector concreto ---
+  - id: q14_tesoro_publico
+    type: factoid
+    question: "Ofertas para el sector del Tesoro Público o Administración Pública."
+    paraphrases:
+      - "¿Qué ofertas son para el Tesoro Público o la Administración Pública?"
+      - "Busco propuestas dirigidas a Tesoro Público o sector público."
+      - "Ofertas del ámbito de la Administración Pública o el Tesoro Público."
+      - "¿Cuáles ofertas atienden al Tesoro Público o a la Administración Pública?"
+    expected_entities:
+      - { type: Sector, name: "Tesoro Público" }
+      - { type: Sector, name: "Administración Pública" }
+
+  # --- Similaridad (consulta abierta) ---
+  - id: q15_similar_to_entelgy_offer
+    type: similarity
+    question: "Busca ofertas parecidas a una asistencia IA para call center público con Azure y RAG."
+    paraphrases:
+      - "¿Qué ofertas se parecen a una asistencia con IA para call center público sobre Azure y RAG?"
+      - "Encuentra propuestas similares a un asistente IA de call center público con Azure y RAG."
+      - "Ofertas análogas a una solución de IA para centro de atención público con Azure y RAG."
+      - "Busco algo parecido a una asistencia IA para call center del sector público con Azure y RAG."

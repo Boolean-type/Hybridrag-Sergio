@@ -1,0 +1,30 @@
+version: 0.1.0
+# Configuración de la capa de evaluación. Cambiar de dominio = editar este YAML,
+# no el código Python.
+
+# Umbrales para decidir OK/KO.
+thresholds:
+  # Fracción de hechos gold que deben aparecer en la respuesta para considerarla
+  # correcta de forma determinista.
+  min_text_recall: 0.5
+  # Correctness mínimo del juez (0-100) si la capa juez está activa.
+  min_correctness: 60
+  # Fracción de paráfrasis (incluida la original) que deben pasar para que el
+  # caso completo se marque OK. 0.6 ≈ mayoría de 5 variantes.
+  min_pass_rate: 0.6
+
+# Juez LLM. El modelo se resuelve por env (JUDGE_LLM_MODEL > LLM_MODEL).
+# Recomendado: un modelo MÁS FUERTE que el respondedor para reducir sesgo.
+judge:
+  system_prompt: >
+    Eres un evaluador riguroso e imparcial de respuestas de un sistema RAG.
+    Juzgas únicamente con la evidencia que se te da, sin conocimiento externo.
+    Penalizas la información inventada aunque suene plausible.
+    Respondes SOLO con JSON válido.
+  criteria:
+    - key: correctness
+      desc: "¿La respuesta contiene los hechos gold esperados y no los contradice?"
+    - key: completeness
+      desc: "¿Cubre todos los hechos gold esperados, sin dejarse ninguno?"
+    - key: faithfulness
+      desc: "¿Toda afirmación se apoya en el contexto recuperado, sin inventar?"

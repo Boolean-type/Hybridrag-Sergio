@@ -1,0 +1,29 @@
+domain: generic
+version: 0.1.0
+
+entity_output:
+  required_fields:
+    - temp_id
+    - type
+    - name
+    - canonical_name
+    - evidence
+    - confidence
+  optional_fields:
+    - properties
+
+relation_output:
+  required_fields:
+    - source
+    - type
+    - target
+    - evidence
+    - confidence
+  optional_fields:
+    - properties
+
+validation_rules:
+  - "Toda entidad debe tener evidence no vacía"
+  - "confidence debe ser >= 0.5 para persistirse"
+  - "El type de la entidad debe existir en ontology.yaml"
+  - "El type de la relación debe existir en relations.yaml"

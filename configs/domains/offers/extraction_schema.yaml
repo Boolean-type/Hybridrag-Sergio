@@ -1,0 +1,30 @@
+domain: offers
+version: 0.1.0
+
+entity_output:
+  required_fields:
+    - temp_id        # ID temporal dentro de la extracción
+    - type           # Tipo de entidad (debe existir en ontology.yaml)
+    - name           # Nombre tal cual aparece en el texto
+    - canonical_name # Nombre normalizado
+    - evidence       # Fragmento de texto que justifica la extracción
+    - confidence     # Float entre 0.0 y 1.0
+  optional_fields:
+    - properties     # Propiedades adicionales según ontology.yaml
+
+relation_output:
+  required_fields:
+    - source         # temp_id o ID persistente del origen
+    - type           # Tipo de relación (debe existir en relations.yaml)
+    - target         # temp_id o ID persistente del destino
+    - evidence       # Fragmento de texto que justifica la relación
+    - confidence     # Float entre 0.0 y 1.0
+  optional_fields:
+    - properties     # Propiedades adicionales según relations.yaml
+
+validation_rules:
+  - "Toda entidad debe tener evidence no vacía"
+  - "confidence debe ser >= 0.5 para persistirse"
+  - "El type de la entidad debe existir en ontology.yaml"
+  - "El type de la relación debe existir en relations.yaml"
+  - "source y target de la relación deben ser entidades válidas"
