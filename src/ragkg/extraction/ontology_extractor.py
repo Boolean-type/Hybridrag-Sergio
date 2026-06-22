@@ -160,6 +160,12 @@ _PROVIDERS: dict[str, dict[str, Any]] = {
         "api_key_env": "GROQ_API_KEY",          # Variable estándar de Groq
         "fallback_api_key_env": "LLM_API_KEY",  # Permitimos LLM_API_KEY como alternativa
     },
+    "openrouter": {
+        "base_url": "https://openrouter.ai/api/v1",
+        "default_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "api_key_env": "OPENROUTER_API_KEY",
+        "fallback_api_key_env": "LLM_API_KEY",
+    },
 }
 
 

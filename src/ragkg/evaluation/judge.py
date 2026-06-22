@@ -124,10 +124,10 @@ Evalúa la RESPUESTA de un sistema RAG frente a los HECHOS GOLD que debería con
             parsed = _extract_json(raw)
         except (json.JSONDecodeError, Exception) as exc:  # noqa: BLE001
             return JudgeVerdict(
-                verdict="KO",
+                verdict="ABSTAIN",
                 confidence=0,
                 failure_locus="none",
-                justification="El juez no devolvió un JSON válido.",
+                justification="El juez no devolvió un JSON válido; su voto se ignora.",
                 error=str(exc),
             )
 

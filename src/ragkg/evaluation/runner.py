@@ -161,40 +161,74 @@ def evaluate_variant(
         )
 
     # --- Combinar ---
-    if not expected and jv is None:
-        # Caso abierto (aggregate/similarity) sin juez: no hay forma objetiva de evaluar.
+    text_recall = text_cov.recall if text_cov else None
+    graph_recall = graph_cov.recall if graph_cov else None
+
+    # El juez solo cuenta como señal si respondió un JSON válido (sin error ni abstención).
+    judge_usable = jv is not None and jv.error is None and jv.verdict != "ABSTAIN"
+    det_pass = None if text_recall is None else text_recall >= thresholds.min_text_recall
+    judge_pass = (jv.correctness >= thresholds.min_correctness) if judge_usable else None
+
+    # Sin señal determinista NI juez utilizable -> no evaluable.
+    if det_pass is None and judge_pass is None:
         return VariantResult(
             question=question, is_paraphrase=is_paraphrase, answer=bundle.answer_text,
             verdict="SKIPPED", confidence=0, text_recall=None, graph_recall=None,
             grounded=grounding.grounded, failure_locus="none",
-            justification="Caso sin hechos gold y sin juez activo: no evaluable.",
+            justification="Sin hechos gold y sin juez utilizable: no evaluable.",
+            judge=asdict(jv) if jv else None,
         )
 
-    text_recall = text_cov.recall if text_cov else None
-    graph_recall = graph_cov.recall if graph_cov else None
+    # Política de combinación calibrada para un JUEZ DÉBIL (modelo 8B):
+    #   - Con gold determinista, MANDA el determinista. El juez NO puede convertir
+    #     un OK determinista en KO (demasiados falsos negativos); solo baja la
+    #     confianza y deja una marca de "revisar".
+    #   - Sin gold (casos abiertos), el veredicto recae en el juez.
+    if det_pass is not None:
+        passed = det_pass
+        judge_vetoes = (judge_pass is False) and det_pass
+    else:
+        passed = bool(judge_pass)
+        judge_vetoes = False
 
-    det_ok = True if text_recall is None else text_recall >= thresholds.min_text_recall
-    judge_ok = True if jv is None else jv.correctness >= thresholds.min_correctness
-    passed = det_ok and judge_ok
-
-    confidence = _anchored_confidence(text_recall, jv)
+    # Confianza anclada al determinista cuando existe; el juez solo ajusta.
+    if text_recall is not None:
+        confidence = int(round(text_recall * 100))
+        if judge_vetoes:
+            confidence = max(0, confidence - 25)  # sospecha de faithfulness, no veto
+    elif judge_usable:
+        confidence = int(round((jv.correctness + jv.confidence) / 2))
+    else:
+        confidence = 0
     # Penaliza citas a chunks inexistentes (señal de fuente alucinada).
     if not grounding.grounded:
         confidence = max(0, confidence - 15)
 
-    if jv is not None:
-        locus = jv.failure_locus if not passed else "none"
-        justification = jv.justification
+    # Localización del fallo.
+    if passed:
+        locus = "none"
+    elif det_pass is None and judge_usable:
+        locus = jv.failure_locus  # caso abierto: lo decide el juez
     else:
-        locus = _derive_locus(
-            text_recall or 0.0, graph_recall or 0.0, thresholds.min_text_recall
-        ) if not passed else "none"
-        if passed:
-            justification = f"Encontrados {text_cov.found} de {expected}."
-        elif locus == "generation":
-            justification = f"Recuperado pero no respondido. Faltan en la respuesta: {text_cov.missing}."
-        else:
-            justification = f"No recuperado del grafo. Faltan: {text_cov.missing}."
+        locus = _derive_locus(text_recall or 0.0, graph_recall or 0.0, thresholds.min_text_recall)
+
+    # Justificación.
+    if passed and judge_vetoes:
+        justification = (
+            f"OK determinista (presentes: {text_cov.found}); el juez discrepa: "
+            f"{jv.justification[:160]}"
+        )
+    elif passed:
+        justification = (
+            f"Encontrados {text_cov.found} de {expected}." if text_cov
+            else (jv.justification if judge_usable else "OK.")
+        )
+    elif det_pass is None and judge_usable:
+        justification = jv.justification
+    elif locus == "generation":
+        justification = f"Recuperado pero no respondido. Faltan en la respuesta: {text_cov.missing}."
+    else:
+        justification = f"No recuperado del grafo. Faltan: {text_cov.missing}."
 
     return VariantResult(
         question=question,
