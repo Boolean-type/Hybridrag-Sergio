@@ -41,17 +41,24 @@ console = Console()
 
 
 def _collect_retrieved_facts(result) -> list[str]:
-    """Nombres de entidades recuperadas (estructurales + expansión de grafo)."""
+    """Nombres de entidades recuperadas (estructurales + expansión de grafo).
+
+    Incluimos también `code`: algunas entidades (p. ej. FunctionalRequirement)
+    guardan su valor verificable ahí (RF09, ...), no en name/canonical_name. Sin
+    esto, el gold por código nunca casa con lo recuperado y graph_recall sale 0.
+    """
     facts: set[str] = set()
     for e in result.structured_entities:
-        name = e.get("name")
-        if name:
-            facts.add(name)
+        for key in ("name", "code"):
+            val = e.get(key)
+            if val:
+                facts.add(val)
     for item in result.graph_context:
         entity = item.get("entity") or {}
-        name = entity.get("canonical_name") or entity.get("name")
-        if name:
-            facts.add(name)
+        for key in ("canonical_name", "name", "code"):
+            val = entity.get(key)
+            if val:
+                facts.add(val)
     return sorted(facts)
 
 

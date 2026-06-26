@@ -1,5 +1,53 @@
 # Changelog del dominio offers
 
+## Posterior a v0.2.0 — Recuperación híbrida y capa de evaluación
+
+> Nota: esta sección recoge cambios **del sistema** (no solo del dominio)
+> introducidos después de la documentación inicial. Cuando esta documentación y el
+> código discrepen, manda el código.
+
+### Recuperación híbrida (RRF)
+
+- La consulta combina cuatro estrategias: **vectorial + keyword (BM25) + Cypher
+  estructural por intención + expansión por grafo**, fusionadas con **Reciprocal
+  Rank Fusion** (`k=60`). Antes la documentación de fases describía solo
+  "vector + expansión"; la implementación actual añade BM25 y consulta estructural.
+  Ver [`01-arquitectura.md`](01-arquitectura.md).
+- Índices nuevos en el esquema: además del **vectorial**, ahora se crea un índice
+  **full-text** `chunk_text` para BM25 (`graph/schema.py`).
+
+### Capa de evaluación (opción A: gold por hechos)
+
+- Nuevo subsistema `src/ragkg/evaluation/` (`dataset`, `metrics`, `judge`,
+  `runner`, `report`) y script `scripts/evaluate.py` (`make eval` / `make
+  eval-quick`).
+- Scoring **determinista-primero**: recall de hechos gold sobre la respuesta y
+  sobre lo recuperado, grounding de citas, y un **juez LLM como apoyo (no veto)**.
+- Datasets: `test_queries.yaml` (v0.5.0, **calibrado a la única oferta ingerida**,
+  11 casos q1–q11) y `test_queries_full.yaml` (corpus amplio multi-oferta).
+- Casos q10/q11 dotados de **gold mínimo e innegable** para no depender del juez.
+- Cada run se guarda en `data/eval_runs/*.json`. Detalle en
+  [`03-evaluacion.md`](03-evaluacion.md).
+
+### Modelos y coste
+
+- Diseño de coste: **modelo potente en ingesta** (extracción, coste único) y
+  **modelo pequeño/barato en respuesta y juez**. En el **MVP** todo corrió con
+  `gpt-5.4-mini` (ver `meta` en `data/eval_runs/`). El proveedor del proyecto es
+  **OpenAI**.
+
+### Correcciones de deriva código↔documentación (documentadas, no resueltas)
+
+- Los entry points `ragkg-ingest`/`ragkg-query` de `pyproject.toml` apuntan a
+  `ragkg.cli.*`, que **no existe**: usar `python scripts/...` o `make`.
+- El proveedor **Anthropic** se barajó pero **no está implementado** (solo
+  `openai`/`groq`/`openrouter`/`mock`).
+- `CHUNK_SIZE` del `.env` **no** lo consume `scripts/ingest.py` (usar
+  `--chunk-size`).
+- Detalle completo en [`04-decisiones-y-limitaciones.md`](04-decisiones-y-limitaciones.md).
+
+---
+
 ## v0.2.0 — Refinado contra oferta real (Entelgy/SGTFI)
 
 **Motivación.** La v0.1.0 se diseñó sobre supuestos. Al confrontarla con una

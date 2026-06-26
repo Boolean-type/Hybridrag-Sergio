@@ -75,12 +75,12 @@ def query_entities_by_label(
     WHERE NOT n:Chunk AND NOT n:Document
     OPTIONAL MATCH (c:Chunk)-[m:MENTIONS]->(n)
     WITH n, collect(DISTINCT c.chunk_id) AS chunk_ids, collect(DISTINCT m.evidence)[..3] AS evidences
-    RETURN n.canonical_name AS name,
+    RETURN coalesce(n.canonical_name, n.code, n.name, n.offer_id) AS name,
            labels(n)[0] AS label,
            properties(n) AS properties,
            chunk_ids,
            evidences
-    ORDER BY n.canonical_name
+    ORDER BY name
     LIMIT $limit
     """
     try:

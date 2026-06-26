@@ -77,10 +77,17 @@ class OpenAICompatibleClient:
         )
         self.max_tokens = max_tokens
 
+    # Familias "razonadoras" de OpenAI: rechazan max_tokens (usan
+    # max_completion_tokens) y temperature/top_p distintos del default.
+    _RESTRICTED_PREFIXES = ("gpt-5", "o1", "o3", "o4")
+
+    def _is_restricted(self) -> bool:
+        m = self.model.lower()
+        return any(m.startswith(p) for p in self._RESTRICTED_PREFIXES)
+
     def generate(self, prompt: str) -> str:
         params: dict[str, Any] = {
             "model": self.model,
-            "temperature": self.temperature,
             "messages": [
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": prompt},
@@ -88,8 +95,17 @@ class OpenAICompatibleClient:
         }
         if self.json_mode:
             params["response_format"] = {"type": "json_object"}
-        if self.max_tokens:
-            params["max_tokens"] = self.max_tokens
+
+        if self._is_restricted():
+            # gpt-5 / o-series: parámetros nuevos.
+            if self.max_tokens:
+                params["max_completion_tokens"] = self.max_tokens
+            # temperature/top_p no soportados -> se omiten (usa el default del modelo).
+        else:
+            params["temperature"] = self.temperature
+            if self.max_tokens:
+                params["max_tokens"] = self.max_tokens
+
         return self._call_with_retry(params)
 
     def _call_with_retry(
@@ -117,7 +133,19 @@ class OpenAICompatibleClient:
         for attempt in range(1, max_attempts + 1):
             try:
                 response = self.client.chat.completions.create(**params)
-                return response.choices[0].message.content or ("{}" if self.json_mode else "")
+                choice = response.choices[0]
+                content = choice.message.content or ("{}" if self.json_mode else "")
+                # JSON mode solo garantiza JSON válido si el modelo TERMINA. Si se
+                # trunca por límite de tokens, el JSON llega cortado y peta al parsear
+                # con un error críptico ("Expecting ',' delimiter"). Lo detectamos aquí
+                # y damos un error accionable en su lugar.
+                if getattr(choice, "finish_reason", None) == "length":
+                    raise ValueError(
+                        "Salida truncada por límite de tokens (finish_reason=length): "
+                        "sube LLM_MAX_TOKENS / max_completion_tokens (en modelos gpt-5 el "
+                        "presupuesto lo comparten razonamiento y salida) o reduce el chunk."
+                    )
+                return content
             except RateLimitError as exc:
                 last_exc = exc
                 # Extraer 'Please try again in 6.675s' del mensaje de error de Groq.
@@ -357,6 +385,15 @@ def build_extraction_prompt(chunk_text: str, config: DomainConfig, compact: bool
 
 10. **Si no hay entidades claras y concretas, devuelve listas vacías**. Es mejor no extraer nada que inventar.
 
+11. **Listas e ítems enumerados: cada ítem es una entidad SEPARADA.** Si el texto enumera elementos con código o número (RF01, RF 02, REQ-12, RNF-3, Fase 1...), extrae UNA entidad por cada uno. NUNCA los fusiones bajo el encabezado de la sección, y presta atención especial al PRIMER ítem tras un título (es el que más se omite). El encabezado/agrupador NO es una entidad.
+   ❌ Una sola entidad "Requisitos Funcionales" que engloba RF01..RF09
+   ❌ Omitir RF01 por ir pegado al título "Requisitos Funcionales"
+   ✅ Una entidad por cada uno: RF01, RF02, RF03, ...
+
+12. **Entidades con código: el `canonical_name` es SOLO el código, en forma canónica y sin espacios internos** ("RF 09" → "RF09"). El título descriptivo va en `name` (y opcionalmente en `properties.title`). Esto da nodos consistentes y evita duplicados ("RF 07" y "RF 07: Integración" son el MISMO RF07).
+   ✅ {{"type": "FunctionalRequirement", "name": "RF01 — Preparación de la Base de Conocimiento", "canonical_name": "RF01", "properties": {{"title": "Preparación de la Base de Conocimiento"}}}}
+   ❌ "canonical_name": "RF 01: Preparación de la Base de Conocimiento"
+
 # Tipos de entidad disponibles
 
 {entity_block_str}
@@ -396,6 +433,21 @@ Respuesta CORRECTA:
 {{"entities": [], "relations": []}}
 
 (No hay tecnologías concretas mencionadas; "herramienta de IA" y "consola" son demasiado genéricas.)
+
+# Ejemplo: LISTA de requisitos (cada ítem es una entidad, INCLUIDO el primero)
+
+Texto: "Requisitos Funcionales. RF 01 — Preparación de la Base de Conocimiento: depuración y normalización del corpus. RF 02 — Arquitectura: diseño modular."
+
+Respuesta:
+{{
+  "entities": [
+    {{"temp_id": "ent_1", "type": "FunctionalRequirement", "name": "RF01 — Preparación de la Base de Conocimiento", "canonical_name": "RF01", "evidence": "RF 01 — Preparación de la Base de Conocimiento", "confidence": 0.97, "properties": {{"title": "Preparación de la Base de Conocimiento"}}}},
+    {{"temp_id": "ent_2", "type": "FunctionalRequirement", "name": "RF02 — Arquitectura", "canonical_name": "RF02", "evidence": "RF 02 — Arquitectura", "confidence": 0.97, "properties": {{"title": "Arquitectura"}}}}
+  ],
+  "relations": []
+}}
+
+(NO se extrae "Requisitos Funcionales": es el encabezado de sección. RF01 NO se omite aunque vaya pegado al título. Cada código es su propia entidad con `canonical_name` = código limpio.)
 
 # Texto a analizar
 

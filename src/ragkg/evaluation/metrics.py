@@ -40,7 +40,7 @@ def entities_in_result(graph_context: list[dict]) -> set[str]:
     names: set[str] = set()
     for item in graph_context:
         entity = item.get("entity") or {}
-        name = entity.get("canonical_name") or entity.get("name")
+        name = entity.get("canonical_name") or entity.get("name") or entity.get("code")
         if name:
             names.add(name)
     return names

@@ -1,4 +1,4 @@
-version: 0.4.0
+version: 0.5.0
 domain: offers
 
 # Conjunto CALIBRADO a la única oferta ingerida (Entelgy / asistencia IA en tiempo
@@ -118,7 +118,10 @@ queries:
       - { type: ServiceLevel, name: "SLA" }
       - { type: ServiceLevel, name: "crítica" }
 
-  # --- Abiertas: sin gold determinista, dependen del juez ---
+  # --- Antes "abiertas": ahora con gold MÍNIMO e innegable (no exhaustivo).
+  #     Se listan solo los hechos que cualquier respuesta correcta DEBE contener,
+  #     verificados contra el grafo. Con min_text_recall=0.5 basta con 2 de 3,
+  #     así dejan de depender del juez sin volverse frágiles. ---
   - id: q10_top_technologies
     type: aggregate
     question: "¿Qué tecnologías son las más relevantes en la oferta?"
@@ -127,6 +130,10 @@ queries:
       - "Dame las tecnologías clave de la oferta."
       - "¿Qué tecnologías destacan en la solución?"
       - "Resume el stack tecnológico de la oferta."
+    expected_entities:
+      - { type: Technology, name: "Azure OpenAI" }
+      - { type: Technology, name: "Azure AI Search" }
+      - { type: AIConcept,  name: "RAG" }
 
   - id: q11_similar_to_offer
     type: similarity
@@ -136,3 +143,7 @@ queries:
       - "Encuentra secciones sobre un asistente IA de atención pública con Azure y RAG."
       - "Contenido análogo a una solución de IA para centro de atención público con Azure y RAG."
       - "Algo parecido a una asistencia IA para canales de atención públicos con Azure y RAG."
+    expected_entities:
+      - { type: AIConcept,     name: "RAG" }
+      - { type: Technology,    name: "Azure OpenAI" }
+      - { type: ContactChannel, name: "WhatsApp" }

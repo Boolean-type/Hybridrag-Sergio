@@ -38,7 +38,7 @@ def build_context_prompt(result: HybridResult, max_chunks: int = 5) -> str:
     for item in result.graph_context:
         entity = item.get("entity") or {}
         label = entity.get("_label")
-        name = entity.get("canonical_name") or entity.get("name") or entity.get("offer_id")
+        name = entity.get("canonical_name") or entity.get("name") or entity.get("code") or entity.get("offer_id")
         if not label or not name or (label, name) in entities_seen:
             continue
         entities_seen.add((label, name))
@@ -97,7 +97,8 @@ def build_answer_summary(result: HybridResult) -> dict[str, Any]:
             {
                 "label": (item.get("entity") or {}).get("_label"),
                 "name": (item.get("entity") or {}).get("canonical_name")
-                or (item.get("entity") or {}).get("name"),
+                or (item.get("entity") or {}).get("name")
+                or (item.get("entity") or {}).get("code"),
             }
             for item in result.graph_context
             if item.get("entity")

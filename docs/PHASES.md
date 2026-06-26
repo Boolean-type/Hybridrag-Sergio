@@ -62,6 +62,12 @@ de GraphRAG. Estos son los puntos fuertes y las decisiones que conviene afinar.
 
 ## Roadmap por fases
 
+> **Estado (resumen).** Las fases 1–4 están implementadas en el código: ingesta
+> con extracción, grafo en Neo4j, recuperación híbrida (vector + BM25 + Cypher
+> estructural + grafo, fusión RRF) y capa de evaluación con gold por hechos. Los
+> checklists conservan su valor como guía de puesta en marcha. Donde el texto
+> original contradecía al código, se ha corregido. Manda el código.
+
 ### Fase 1 — Base agnóstica (semana 1)
 
 **Objetivo.** Que el pipeline pueda leer documentos, trocearlos, embeberlos y
@@ -73,8 +79,8 @@ Checklist:
 - [ ] `python scripts/check_connection.py` responde "Conexión OK".
 - [ ] `python scripts/create_schema.py` crea constraints e índice vectorial.
 - [ ] `pytest tests/test_config_loader.py tests/test_normalization.py tests/test_retrieval.py` en verde.
-- [ ] `python scripts/ingest.py data/samples/oferta_ejemplo.md --no-extract`
-      guarda `Document` y `Chunk` con embeddings.
+- [ ] `python scripts/ingest.py data/samples/Entelgy_Oferta_tecnica.pdf --no-extract`
+      (o `make ingest-sample`) guarda `Document` y `Chunk` con embeddings.
 - [ ] Una consulta Cypher en el Browser muestra los chunks:
       `MATCH (c:Chunk) RETURN c LIMIT 10`.
 
@@ -82,7 +88,9 @@ Checklist:
 
 - Tamaño de chunk y overlap (defaults: 1200 / 200).
 - Modelo de embeddings (defaults: MiniLM local 384 dim).
-- ¿Vas a usar Anthropic API, OpenAI o un modelo local? Configura `.env`.
+- Proveedor LLM: el del proyecto es **OpenAI** (`LLM_PROVIDER=openai`). También
+  hay soporte compatible OpenAI para `groq` y `openrouter`, y `mock` para tests.
+  Anthropic se barajó pero **no está implementado**. Configura `.env`.
 
 ---
 
@@ -94,8 +102,9 @@ Checklist:
 
 - [ ] Refinar `configs/domains/offers/semantic_definitions.yaml` con tus ejemplos reales.
 - [ ] Ajustar `normalization.yaml` con los alias más frecuentes en tus documentos.
-- [ ] Configurar `LLM_PROVIDER=openai` (o anthropic) en `.env`.
-- [ ] `python scripts/ingest.py data/samples/oferta_ejemplo.md` (con `--extract`).
+- [ ] Configurar `LLM_PROVIDER=openai` en `.env` (Anthropic no está implementado).
+- [ ] `python scripts/ingest.py data/samples/Entelgy_Oferta_tecnica.pdf` (con `--extract`),
+      o `make ingest-sample`.
 - [ ] En Neo4j Browser: `MATCH (o:Offer)-[:REQUIRES_TECHNOLOGY]->(t) RETURN o, t`.
 - [ ] Cada entidad debe tener `confidence` y cada relación `evidence`.
 
@@ -123,12 +132,12 @@ Checklist:
       tecnologías más frecuentes, requisitos por rol, certificaciones por sector.
 - [ ] El `answer_builder` produce un prompt limpio para el LLM final.
 
-**Cuándo añadir un LLM de respuesta.**
+**LLM de respuesta (ya integrado).**
 
-Por defecto, `scripts/query.py` solo enseña el contexto recuperado. Si quieres
-respuestas en lenguaje natural, conecta el contexto a tu LLM con
-`build_context_prompt(result)` y manda eso al `LLMClient`. No es necesario
-añadir más arquitectura.
+`scripts/query.py` **genera respuesta en lenguaje natural por defecto**: arma el
+contexto con `build_context_prompt(result)` y llama al `LLMClient`
+(`build_llm_client(json_mode=False)`, modelo `LLM_MODEL`). Usa `--raw` para ver
+solo el contexto recuperado sin gastar tokens, y `--json` para salida estructurada.
 
 ---
 
@@ -138,11 +147,16 @@ añadir más arquitectura.
 
 Checklist:
 
-- [ ] 20-50 ofertas ingeridas en Neo4j.
-- [ ] Las 5 queries de `src/ragkg/evaluation/test_queries.yaml` devuelven
+- [ ] Ofertas ingeridas en Neo4j. **Estado actual:** el dataset calibrado
+      (`test_queries.yaml` v0.5.0, 11 casos q1–q11) está afinado a **una sola**
+      oferta (Entelgy). Para un corpus amplio multi-oferta, ingiere más documentos
+      y usa `test_queries_full.yaml`.
+- [ ] Los 11 casos de `src/ragkg/evaluation/test_queries.yaml` devuelven
       resultados esperables.
-- [ ] Métricas básicas calculadas: precisión y recall por consulta.
-- [ ] `make eval` produce accuracy, consistencia entre paráfrasis y JSON por run.
+- [ ] Métricas calculadas: recall de hechos gold, accuracy, consistencia entre
+      paráfrasis y confianza por caso.
+- [ ] `make eval` produce accuracy, consistencia y un JSON por run en
+      `data/eval_runs/`.
 **Cómo evaluar (opción A: gold por hechos).**
 
 Cada query de `test_queries.yaml` lleva 4 paráfrasis congeladas y una lista
@@ -154,11 +168,15 @@ juzga con un LLM, y emite OK/KO + confianza anclada + localización del fallo
 ```bash
 make eval                 # con juez LLM (necesita LLM_PROVIDER configurado)
 make eval-quick           # solo capa determinista, 3 casos, sin gastar tokens
-python scripts/evaluate.py --only q1_java_microservices_banca --variants
+python scripts/evaluate.py --only q1_entelgy_rf --variants          # dataset calibrado
+python scripts/evaluate.py --dataset-path src/ragkg/evaluation/test_queries_full.yaml \
+    --only q1_java_microservices_banca --variants                      # corpus amplio
 ```
 
-- [ ] CLI documentada (`ragkg-ingest`, `ragkg-query`) o, si prefieres,
-      una API FastAPI con dos endpoints (`/ingest` y `/query`).
+- [ ] CLI documentada. **Aviso:** los entry points `ragkg-ingest`/`ragkg-query`
+      de `pyproject.toml` apuntan a `ragkg.cli.*`, que **no existe**; la vía
+      soportada es `python scripts/...` o `make`. Alternativa: una API FastAPI con
+      dos endpoints (`/ingest` y `/query`).
 - [ ] Una sesión grabada en Neo4j Browser mostrando el grafo.
 
 ---
